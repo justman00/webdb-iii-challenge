@@ -16,11 +16,11 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const student = await db
-      .select("*")
-      .from("students")
-      .where({ id: req.params.id });
-
-    //.innerJoin("cohorts", "students.cohort_id", "cohorts.id");
+      .select("s.name", "c.name as cohort", "s.id")
+      .from("students as s")
+      .innerJoin("cohorts as c", { "c.id": "s.cohort_id" })
+      .where({ "s.id": req.params.id })
+      .first();
 
     res.status(200).json(student);
   } catch (e) {
